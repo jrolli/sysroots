@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+export SYSROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export TARGET=TARGET_TRIPLE
+export CC=clang
+export CXX=clang++
+export AS=llvm-as
+export OBJCOPY=llvm-objcopy
+export OBJDUMP=llvm-objdump
+export AR=llvm-ar
+export RANLIB=llvm-ranlib
+export STRIP=llvm-strip
+export CFLAGS="--target=$TARGET --sysroot=$SYSROOT -ffile-prefix-map=$HOME=./"
+export CXXFLAGS="$CFLAGS -stdlib=libc++"
+export PKG_CONFIG_PATH=$SYSROOT/lib/pkgconfig
+export LDFLAGS="-fuse-ld=lld --rtlib=compiler-rt -resource-dir=$SYSROOT --unwindlib=libunwind -stdlib=libc++ -lc++abi"
