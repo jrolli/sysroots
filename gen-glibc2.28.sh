@@ -11,62 +11,22 @@ echo "LLVM src dir:  $LLVM_SRC_DIR"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-case $CMAKE_ARCH in
-      x86_64)
-            REPO_URL="http://mirror.centos.org/centos/7/os/x86_64/Packages"
-            PACKAGE_SUFFIX="el7.x86_64.rpm"
-            KERNEL_PKG="kernel-headers-3.10.0-1160.$PACKAGE_SUFFIX"
-            LIB=lib64
-      ;;
-
-      i686)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/i386/Packages"
-            PACKAGE_SUFFIX="el7.i686.rpm"
-            KERNEL_PKG="kernel-headers-3.10.0-1160.2.2.el7.centos.plus.i686.rpm"
-            LIB=lib
-      ;;
-
-      aarch64)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/aarch64/Packages"
-            PACKAGE_SUFFIX="el7.aarch64.rpm"
-            KERNEL_PKG="kernel-headers-4.18.0-193.28.1.$PACKAGE_SUFFIX"
-            LIB=lib64
-      ;;
-
-      armv7hl)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/armhfp/Packages"
-            PACKAGE_SUFFIX="el7.armv7hl.rpm"
-            KERNEL_PKG="kernel-headers-5.4.28-200.$PACKAGE_SUFFIX"
-            LIB=lib
-      ;;
-
-      powerpc64)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/ppc64/Packages"
-            PACKAGE_SUFFIX="el7.ppc64.rpm"
-            KERNEL_PKG="kernel-headers-3.10.0-1160.$PACKAGE_SUFFIX"
-            LIB=lib64
-      ;;
-
-      powerpc64le)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/ppc64le/Packages"
-            PACKAGE_SUFFIX="el7.ppc64le.rpm"
-            KERNEL_PKG="kernel-headers-3.10.0-1160.$PACKAGE_SUFFIX"
-            LIB=lib64
-      ;;
-
-      *)
-            echo "ERROR: unsupported architecture"
-            exit 1
-      ;;
-esac
+REPO_URL="https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/$CMAKE_ARCH/baseos/os/Packages"
+PACKAGE_SUFFIX="$CMAKE_ARCH.rpm"
+GLIBC_VERSION="2.28-236.el8_9.13"
+KERNEL_PKG="kernel-headers-4.18.0-513.24.1.el8_9.$PACKAGE_SUFFIX"
+LIB=lib64
 
 mkdir -p rpmroot
 pushd rpmroot
-for RPM in "glibc-2.17-317.$PACKAGE_SUFFIX" "glibc-devel-2.17-317.$PACKAGE_SUFFIX" "glibc-headers-2.17-317.$PACKAGE_SUFFIX" "$KERNEL_PKG"
+for RPM in "glibc-$GLIBC_VERSION.$PACKAGE_SUFFIX" "glibc-devel-$GLIBC_VERSION.$PACKAGE_SUFFIX" "glibc-headers-$GLIBC_VERSION.$PACKAGE_SUFFIX"
 do
-      wget $REPO_URL/$RPM
+      wget $REPO_URL/g/$RPM
       rpm2cpio $RPM | cpio -idmv
 done
+
+wget $REPO_URL/k/$KERNEL_PKG
+rpm2cpio $KERNEL_PKG | cpio -idmv
 
 mkdir -p $SYSROOT_PATH
 cp -r usr/include $SYSROOT_PATH/include

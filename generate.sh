@@ -11,6 +11,20 @@ export LLVM_SRC_DIR
 export MUSL_SRC_DIR
 export LINUX_SRC_DIR
 
+x86_64-linux-glibc2.28 () {
+    TARGET=x86_64-linux-gnu \
+    CMAKE_ARCH=x86_64 \
+    SYSROOT_PATH=`pwd`/x86_64-linux-glibc2.28 \
+    $SCRIPT_DIR/gen-glibc2.28.sh
+}
+
+aarch64-linux-glibc2.28 () {
+    TARGET=aarch64-linux-gnu \
+    CMAKE_ARCH=aarch64 \
+    SYSROOT_PATH=`pwd`/aarch64-linux-glibc2.28 \
+    $SCRIPT_DIR/gen-glibc2.28.sh
+}
+
 x86_64-linux-glibc2.17 () {
     TARGET=x86_64-linux-gnu \
     CMAKE_ARCH=x86_64 \
@@ -148,6 +162,8 @@ then
         $tgt
     done
 else
+    x86_64-linux-glibc2.28
+    aarch64-linux-glibc2.28
     x86_64-linux-glibc2.17
     i686-linux-glibc2.17
     aarch64-linux-glibc2.17
