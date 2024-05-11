@@ -64,7 +64,7 @@ mkdir -p rpmroot
 pushd rpmroot
 for RPM in "glibc-2.17-317.$PACKAGE_SUFFIX" "glibc-devel-2.17-317.$PACKAGE_SUFFIX" "glibc-headers-2.17-317.$PACKAGE_SUFFIX" "$KERNEL_PKG"
 do
-      wget $REPO_URL/$RPM
+      curl -O $REPO_URL/$RPM
       rpm2cpio $RPM | cpio -idmv
 done
 
