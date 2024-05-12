@@ -15,12 +15,12 @@ set(CMAKE_ASM_COMPILER_TARGET ${triple})
 set(CMAKE_C_COMPILER_TARGET ${triple})
 set(CMAKE_CXX_COMPILER_TARGET ${triple})
 
-set(CMAKE_C_FLAGS_INIT "-fPIC -ffile-prefix-map=$ENV{HOME}=./")
-set(CMAKE_CXX_FLAGS_INIT "-fPIC -ffile-prefix-map=$ENV{HOME}=./")
+set(CMAKE_C_FLAGS_INIT "-fPIC -ffile-prefix-map=$ENV{HOME}=. -stdlib=libc++")
+set(CMAKE_CXX_FLAGS_INIT "-fPIC -ffile-prefix-map=$ENV{HOME}=. -stdlib=libc++")
 
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld --rtlib=compiler-rt -resource-dir=${CMAKE_CURRENT_LIST_DIR} --unwindlib=libunwind -stdlib=libc++ -lc++abi")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld --rtlib=compiler-rt -resource-dir=${CMAKE_CURRENT_LIST_DIR} --unwindlib=libunwind -stdlib=libc++ -lc++abi")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld --rtlib=compiler-rt -resource-dir=${CMAKE_CURRENT_LIST_DIR} --unwindlib=libunwind -stdlib=libc++ -lc++abi")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld --rtlib=compiler-rt -resource-dir=${CMAKE_CURRENT_LIST_DIR} --unwindlib=libunwind -lc++abi")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld --rtlib=compiler-rt -resource-dir=${CMAKE_CURRENT_LIST_DIR} --unwindlib=libunwind -lc++abi")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld --rtlib=compiler-rt -resource-dir=${CMAKE_CURRENT_LIST_DIR} --unwindlib=libunwind -lc++abi")
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)

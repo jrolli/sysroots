@@ -3,6 +3,8 @@ set -euo pipefail
 
 # Known docker arch: 386, amd64, armv7, arm64v8, ppc64le
 
+export LLVM_SRC_DIR=`realpath $LLVM_SRC_DIR`
+
 echo "Target:        $TARGET"
 echo "CMake arch:    $CMAKE_ARCH"
 echo "Sysroot path:  $SYSROOT_PATH"

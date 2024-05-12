@@ -3,6 +3,8 @@ set -euo pipefail
 
 # Known docker arch: 386, amd64, armv7, arm64v8, ppc64le
 
+export LLVM_SRC_DIR=`realpath $LLVM_SRC_DIR`
+
 echo "Target:        $TARGET"
 echo "CMake arch:    $CMAKE_ARCH"
 echo "Sysroot path:  $SYSROOT_PATH"
@@ -119,6 +121,8 @@ cmake -B build-sanitizers \
       --toolchain=$SYSROOT_PATH/toolchain.cmake \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=/ \
+      -DCMAKE_ASM_FLAGS="-ffile-prefix-map=$LLVM_SRC_DIR=./ -ffile-prefix-map=`pwd`=./" \
+      -DCMAKE_C_FLAGS="-ffile-prefix-map=$LLVM_SRC_DIR=./" \
       -DCOMPILER_RT_USE_LIBCXX=ON \
       -DCOMPILER_RT_BUILD_BUILTINS=OFF \
       -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
