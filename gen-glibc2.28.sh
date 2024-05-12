@@ -74,9 +74,7 @@ cmake -B build-builtins \
       -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON
 
 cmake --build build-builtins --target builtins
-
-install -D -d $SYSROOT_PATH/lib/linux
-find build-builtins -name libclang_rt.*.a -exec install {} $SYSROOT_PATH/lib/linux \;
+DESTDIR=$SYSROOT_PATH ninja -C build-builtins install-builtins
 
 sed -e "s|LLVM_SRC_DIR|$LLVM_SRC_DIR|" \
     -e "s|CMAKE_ARCH_VAR|$CMAKE_ARCH|" \
@@ -115,6 +113,24 @@ then
       echo 'set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} -mfloat-abi=hard")' >> $SYSROOT_PATH/toolchain.cmake
 fi
 
+cmake -B build-sanitizers \
+      -S $LLVM_SRC_DIR/compiler-rt \
+      -G Ninja \
+      --toolchain=$SYSROOT_PATH/toolchain.cmake \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/ \
+      -DCOMPILER_RT_USE_LIBCXX=ON \
+      -DCOMPILER_RT_BUILD_BUILTINS=OFF \
+      -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+      -DCOMPILER_RT_BUILD_PROFILE=OFF \
+      -DCOMPILER_RT_BUILD_SANITIZERS=ON \
+      -DCOMPILER_RT_BUILD_XRAY=OFF \
+      -DCOMPILER_RT_BUILD_ORC=OFF \
+      -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON
+
+cmake --build build-sanitizers
+DESTDIR=$SYSROOT_PATH ninja -C build-sanitizers install
+
 sed -e "s|TARGET_TRIPLE|$TARGET|" $SCRIPT_DIR/bashenv.in > $SYSROOT_PATH/bashenv
 install --mode=0755 $SCRIPT_DIR/activate.sh $SYSROOT_PATH/activate.sh
 
@@ -125,4 +141,5 @@ popd
 rm -r rpmroot
 rm -r build-builtins
 rm -r build-runtimes
+rm -r build-sanitizers
 rm -r $SYSROOT_PATH

@@ -43,6 +43,28 @@ find $SYSROOT_PATH -name libucontext\*.so\* -delete
 popd
 ```
 
+## Building Clang
+
+```bash
+cmake -B build \
+      -S `pwd`/llvm \
+      -G Ninja \
+      --toolchain=`pwd`/x86_64-linux-glibc2.28/toolchain.cmake \
+      -DLLVM_ENABLE_PROJECTS="clang;lld;clang-tools-extra" \
+      -DLLVM_INCLUDE_BENCHMARKS=OFF \
+      -DLLVM_INCLUDE_EXAMPLES=OFF \
+      -DLLVM_TARGETS_TO_BUILD="AArch64;ARM;BPF;LoongArch;Mips;PowerPC;RISCV;Sparc;WebAssembly;X86" \
+      -DCMAKE_INSTALL_PREFIX="/opt" \
+      -DCMAKE_BUILD_TYPE=MinSizeRel \
+      -DCMAKE_CXX_FLAGS="-I`pwd`/x86_64-linux-glibc2.28/usr/include/c++/v1/" \
+      -DLLVM_ENABLE_LIBCXX=ON \
+      -DHAVE_CXX_ATOMICS_WITHOUT_LIB=ON \
+      -DHAVE_CXX_ATOMICS64_WITHOUT_LIB=ON \
+      -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON \
+      -DLLVM_BUILD_LLVM_DYLIB=ON \
+      -DLLVM_LINK_LLVM_DYLIB=ON
+```
+
 ## Design
 
 This is a work in progress, but here are some of the current design decisions:
