@@ -46,7 +46,9 @@ cp --preserve=all {usr/,}$LIB/libresolv{.,-,_}*  $SYSROOT_PATH/$LIB || true
 # Add do-nothing endpoints for old init methods
 touch $SYSROOT_PATH/$LIB/crtbegin.o
 touch $SYSROOT_PATH/$LIB/crtbeginT.o
+touch $SYSROOT_PATH/$LIB/crtbeginS.o
 touch $SYSROOT_PATH/$LIB/crtend.o
+touch $SYSROOT_PATH/$LIB/crtendS.o
 
 for FILE in `grep -lr 'GNU ld script' $SYSROOT_PATH`
 do
@@ -101,6 +103,7 @@ cmake -B build-runtimes \
       -DLIBCXX_ENABLE_SHARED=OFF \
       -DLIBCXXABI_ENABLE_STATIC=ON \
       -DLIBCXXABI_ENABLE_SHARED=OFF \
+      -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
       -DLIBUNWIND_ENABLE_STATIC=ON \
       -DLIBUNWIND_ENABLE_SHARED=OFF
 
@@ -115,25 +118,23 @@ then
       echo 'set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} -mfloat-abi=hard")' >> $SYSROOT_PATH/toolchain.cmake
 fi
 
-cmake -B build-sanitizers \
-      -S $LLVM_SRC_DIR/compiler-rt \
-      -G Ninja \
-      --toolchain=$SYSROOT_PATH/toolchain.cmake \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=/ \
-      -DCMAKE_ASM_FLAGS="-ffile-prefix-map=$LLVM_SRC_DIR=./ -ffile-prefix-map=`pwd`=./" \
-      -DCMAKE_C_FLAGS="-ffile-prefix-map=$LLVM_SRC_DIR=./" \
-      -DCOMPILER_RT_USE_LIBCXX=ON \
-      -DCOMPILER_RT_BUILD_BUILTINS=OFF \
-      -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
-      -DCOMPILER_RT_BUILD_PROFILE=OFF \
-      -DCOMPILER_RT_BUILD_SANITIZERS=ON \
-      -DCOMPILER_RT_BUILD_XRAY=OFF \
-      -DCOMPILER_RT_BUILD_ORC=OFF \
-      -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON
+# cmake -B build-sanitizers \
+#       -S $LLVM_SRC_DIR/compiler-rt \
+#       -G Ninja \
+#       --toolchain=$SYSROOT_PATH/toolchain.cmake \
+#       -DCMAKE_BUILD_TYPE=Release \
+#       -DCMAKE_INSTALL_PREFIX=/ \
+#       -DCOMPILER_RT_USE_LIBCXX=ON \
+#       -DCOMPILER_RT_BUILD_BUILTINS=OFF \
+#       -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+#       -DCOMPILER_RT_BUILD_PROFILE=OFF \
+#       -DCOMPILER_RT_BUILD_SANITIZERS=ON \
+#       -DCOMPILER_RT_BUILD_XRAY=OFF \
+#       -DCOMPILER_RT_BUILD_ORC=OFF \
+#       -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON
 
-cmake --build build-sanitizers
-DESTDIR=$SYSROOT_PATH ninja -C build-sanitizers install
+# cmake --build build-sanitizers
+# DESTDIR=$SYSROOT_PATH ninja -C build-sanitizers install
 
 sed -e "s|TARGET_TRIPLE|$TARGET|" $SCRIPT_DIR/bashenv.in > $SYSROOT_PATH/bashenv
 install --mode=0755 $SCRIPT_DIR/activate.sh $SYSROOT_PATH/activate.sh
@@ -145,5 +146,5 @@ popd
 rm -r rpmroot
 rm -r build-builtins
 rm -r build-runtimes
-rm -r build-sanitizers
+# rm -r build-sanitizers
 rm -r $SYSROOT_PATH

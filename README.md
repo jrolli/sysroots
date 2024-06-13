@@ -56,7 +56,6 @@ cmake -B build \
       -DLLVM_TARGETS_TO_BUILD="AArch64;ARM;BPF;LoongArch;Mips;PowerPC;RISCV;Sparc;WebAssembly;X86" \
       -DCMAKE_INSTALL_PREFIX="/opt" \
       -DCMAKE_BUILD_TYPE=MinSizeRel \
-      -DCMAKE_CXX_FLAGS="-I`pwd`/x86_64-linux-glibc2.28/usr/include/c++/v1/" \
       -DLLVM_ENABLE_LIBCXX=ON \
       -DHAVE_CXX_ATOMICS_WITHOUT_LIB=ON \
       -DHAVE_CXX_ATOMICS64_WITHOUT_LIB=ON \
