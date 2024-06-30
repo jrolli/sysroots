@@ -72,7 +72,9 @@ jobs:
                 -DLLVM_ENABLE_UNWIND_TABLES=OFF \
                 -DLLVM_LINK_LLVM_DYLIB=ON
           cmake --build build-clang
-          DESTDIR=../llvm-${{ matrix.toolchain_target }} cmake --build build-clang --target install
+          DESTDIR=`pwd`/llvm-${{ matrix.toolchain_target }} cmake --build build-clang --target install
+          mv llvm-${{ matrix.toolchain_target }}/usr/* llvm-${{ matrix.toolchain_target }}
+          rmdir llvm-${{ matrix.toolchain_target }}/usr
           tar cJvf llvm-${{ matrix.toolchain_target }}.tar.xz llvm-${{ matrix.toolchain_target }}
       - name: Upload LLVM
         if: endsWith(matrix.toolchain_target, '-glibc2.28')
