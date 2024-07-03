@@ -85,8 +85,10 @@ cp --preserve=all {usr/,}$LIB/libresolv{.,-,_}*  $SYSROOT_PATH/$LIB || true
 
 # Add do-nothing endpoints for old init methods
 touch $SYSROOT_PATH/$LIB/crtbegin.o
+touch $SYSROOT_PATH/$LIB/crtbeginS.o
 touch $SYSROOT_PATH/$LIB/crtbeginT.o
 touch $SYSROOT_PATH/$LIB/crtend.o
+touch $SYSROOT_PATH/$LIB/crtendS.o
 
 for FILE in `grep -lr 'GNU ld script' $SYSROOT_PATH`
 do
