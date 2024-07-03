@@ -15,42 +15,42 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 case $CMAKE_ARCH in
       x86_64)
-            REPO_URL="http://mirror.centos.org/centos/7/os/x86_64/Packages"
+            REPO_URL="https://vault.centos.org/7.9.2009/os/x86_64/Packages/"
             PACKAGE_SUFFIX="el7.x86_64.rpm"
             KERNEL_PKG="kernel-headers-3.10.0-1160.$PACKAGE_SUFFIX"
             LIB=lib64
       ;;
 
       i686)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/i386/Packages"
+            REPO_URL="https://vault.centos.org/altarch/7/os/i386/Packages"
             PACKAGE_SUFFIX="el7.i686.rpm"
             KERNEL_PKG="kernel-headers-3.10.0-1160.2.2.el7.centos.plus.i686.rpm"
             LIB=lib
       ;;
 
       aarch64)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/aarch64/Packages"
+            REPO_URL="https://vault.centos.org/altarch/7/os/aarch64/Packages"
             PACKAGE_SUFFIX="el7.aarch64.rpm"
             KERNEL_PKG="kernel-headers-4.18.0-193.28.1.$PACKAGE_SUFFIX"
             LIB=lib64
       ;;
 
       armv7hl)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/armhfp/Packages"
+            REPO_URL="https://vault.centos.org/altarch/7/os/armhfp/Packages"
             PACKAGE_SUFFIX="el7.armv7hl.rpm"
             KERNEL_PKG="kernel-headers-5.4.28-200.$PACKAGE_SUFFIX"
             LIB=lib
       ;;
 
       powerpc64)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/ppc64/Packages"
+            REPO_URL="https://vault.centos.org/altarch/7/os/ppc64/Packages"
             PACKAGE_SUFFIX="el7.ppc64.rpm"
             KERNEL_PKG="kernel-headers-3.10.0-1160.$PACKAGE_SUFFIX"
             LIB=lib64
       ;;
 
       powerpc64le)
-            REPO_URL="http://mirror.centos.org/altarch/7/os/ppc64le/Packages"
+            REPO_URL="https://vault.centos.org/altarch/7/os/ppc64le/Packages"
             PACKAGE_SUFFIX="el7.ppc64le.rpm"
             KERNEL_PKG="kernel-headers-3.10.0-1160.$PACKAGE_SUFFIX"
             LIB=lib64
