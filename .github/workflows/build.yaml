@@ -75,6 +75,7 @@ jobs:
           DESTDIR=`pwd`/llvm-${{ matrix.toolchain_target }} cmake --build build-clang --target install
           mv llvm-${{ matrix.toolchain_target }}/usr/* llvm-${{ matrix.toolchain_target }}
           rmdir llvm-${{ matrix.toolchain_target }}/usr
+          find llvm-${{ matrix.toolchain_target }} -type f -exec llvm-strip {} \; 2>/dev/null
           tar cJvf llvm-${{ matrix.toolchain_target }}.tar.xz llvm-${{ matrix.toolchain_target }}
       - name: Upload LLVM
         if: endsWith(matrix.toolchain_target, '-glibc2.28')
