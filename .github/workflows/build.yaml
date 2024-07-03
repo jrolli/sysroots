@@ -91,7 +91,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
       - name: Gather artifacts
         uses: actions/download-artifact@v4
         with:
@@ -103,3 +106,16 @@ jobs:
         with:
           body: "LLVM + Clang v18.1.8\nLinux kernel v6.9\nmusl v1.2.5"
           files: artifacts/*.tar.xz
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push container
+        uses: docker/build-push-action@v6
+        with:
+          context: artifacts
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
