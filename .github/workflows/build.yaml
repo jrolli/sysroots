@@ -58,6 +58,9 @@ jobs:
                 -S ../llvm-project/llvm \
                 -G Ninja \
                 --toolchain=`pwd`/${{ matrix.toolchain_target}}/toolchain.cmake \
+                -DLLVM_FORCE_VC_REVISION=manylinux_2_28 \
+                -DLLVM_FORCE_VC_REPOSITORY=OFF \
+                -DLLVM_APPEND_VC_REV=OFF \
                 -DLLVM_ENABLE_PROJECTS="clang;lld;clang-tools-extra" \
                 -DLLVM_INCLUDE_BENCHMARKS=OFF \
                 -DLLVM_INCLUDE_EXAMPLES=OFF \
@@ -75,7 +78,7 @@ jobs:
           DESTDIR=`pwd`/llvm-${{ matrix.toolchain_target }} cmake --build build-clang --target install
           mv llvm-${{ matrix.toolchain_target }}/usr/* llvm-${{ matrix.toolchain_target }}
           rmdir llvm-${{ matrix.toolchain_target }}/usr
-          find llvm-${{ matrix.toolchain_target }} -type f -exec llvm-strip {} \; 2>/dev/null
+          find llvm-${{ matrix.toolchain_target }} -type f -exec llvm-strip --strip-all {} \; 2>/dev/null
           tar cJvf llvm-${{ matrix.toolchain_target }}.tar.xz llvm-${{ matrix.toolchain_target }}
       - name: Upload LLVM
         if: endsWith(matrix.toolchain_target, '-glibc2.28')

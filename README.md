@@ -50,6 +50,9 @@ cmake -B build \
       -S `pwd`/llvm \
       -G Ninja \
       --toolchain=`pwd`/x86_64-linux-glibc2.28/toolchain.cmake \
+      -DLLVM_FORCE_VC_REVISION=manylinux_2_28 \
+      -DLLVM_FORCE_VC_REPOSITORY=OFF \
+      -DLLVM_APPEND_VC_REV=OFF \
       -DLLVM_ENABLE_PROJECTS="clang;lld;clang-tools-extra" \
       -DLLVM_INCLUDE_BENCHMARKS=OFF \
       -DLLVM_INCLUDE_EXAMPLES=OFF \
