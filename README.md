@@ -24,6 +24,15 @@ cmake -Bbuild -Spath/to/your/project --toolchain=aarch64-linux-musl
 cmake --build build
 ```
 
+## FreeBSD VMs
+```bash
+qemu-system-x86_64 \
+    -nic user,smb=/home/jrollinson/,smbserver=10.0.2.5 \
+    -device virtio-blk-pci,drive=hd0 \
+    -drive if=none,id=hd0,format=qcow2,file=FreeBSD-14.1-RELEASE-amd64.qcow2 \
+    -snapshot
+```
+
 ## Adding ucontext support
 
 It can be temperamental and there are some potential upstream libucontext
@@ -46,26 +55,41 @@ popd
 ## Building Clang
 
 ```bash
+curl https://www.zlib.net/zlib-1.3.1.tar.xz | tar xJ
+cmake -B build-zlib \
+    -S zlib-1.3.1 \
+    -G Ninja \
+    --toolchain=`pwd`/x86_64-linux-glibc2.28/toolchain.cmake \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DCMAKE_BUILD_TYPE=MinSizeRel \
+    -DCMAKE_INSTALL_PREFIX=`pwd`/zlib-install
+cmake --build build-zlib
+cmake --install build-zlib
 cmake -B build \
       -S `pwd`/llvm \
       -G Ninja \
       --toolchain=`pwd`/x86_64-linux-glibc2.28/toolchain.cmake \
-      -DLLVM_FORCE_VC_REVISION=manylinux_2_28 \
-      -DLLVM_FORCE_VC_REPOSITORY=OFF \
+      -DCMAKE_BUILD_TYPE=MinSizeRel \
+      -DCMAKE_INSTALL_PREFIX="/" \
+      -DHAVE_CXX_ATOMICS64_WITHOUT_LIB=ON \
+      -DHAVE_CXX_ATOMICS_WITHOUT_LIB=ON \
       -DLLVM_APPEND_VC_REV=OFF \
+      -DLLVM_BUILD_LLVM_DYLIB=ON \
+      -DLLVM_ENABLE_FFI=OFF \
+      -DLLVM_ENABLE_LIBCXX=ON \
+      -DLLVM_ENABLE_LIBEDIT=OFF \
       -DLLVM_ENABLE_PROJECTS="clang;lld;clang-tools-extra" \
+      -DLLVM_ENABLE_UNWIND_TABLES=OFF \
+      -DLLVM_ENABLE_ZLIB=FORCE_ON \
+      -DLLVM_FORCE_VC_REPOSITORY=OFF \
+      -DLLVM_FORCE_VC_REVISION=manylinux_2_28 \
       -DLLVM_INCLUDE_BENCHMARKS=OFF \
       -DLLVM_INCLUDE_EXAMPLES=OFF \
-      -DLLVM_TARGETS_TO_BUILD="AArch64;ARM;BPF;LoongArch;Mips;PowerPC;RISCV;Sparc;WebAssembly;X86" \
-      -DCMAKE_INSTALL_PREFIX="/opt" \
-      -DCMAKE_BUILD_TYPE=MinSizeRel \
-      -DLLVM_ENABLE_LIBCXX=ON \
-      -DHAVE_CXX_ATOMICS_WITHOUT_LIB=ON \
-      -DHAVE_CXX_ATOMICS64_WITHOUT_LIB=ON \
       -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON \
-      -DLLVM_BUILD_LLVM_DYLIB=ON \
-      -DLLVM_ENABLE_UNWIND_TABLES=OFF \
-      -DLLVM_LINK_LLVM_DYLIB=ON
+      -DLLVM_LINK_LLVM_DYLIB=ON \
+      -DLLVM_TARGETS_TO_BUILD="AArch64;ARM;BPF;LoongArch;Mips;PowerPC;RISCV;Sparc;WebAssembly;X86" \
+      -DZLIB_INCLUDE_DIR=`pwd`/zlib-install/include \
+      -DZLIB_LIBRARY=`pwd`/zlib-install/lib/libz.a
 ```
 
 ## Design

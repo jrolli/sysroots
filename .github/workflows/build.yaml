@@ -50,36 +50,13 @@ jobs:
           path: ${{ matrix.toolchain_target }}.tar.xz
           retention-days: 7
           compression-level: 0
-      - name: Build LLVM
+      - name: Prep toolchain
         if: endsWith(matrix.toolchain_target, '-glibc2.28')
         run: |
           tar xf ${{ matrix.toolchain_target }}.tar.xz
-          cmake -B build-clang \
-                -S ../llvm-project/llvm \
-                -G Ninja \
-                --toolchain=`pwd`/${{ matrix.toolchain_target}}/toolchain.cmake \
-                -DLLVM_FORCE_VC_REVISION=manylinux_2_28 \
-                -DLLVM_FORCE_VC_REPOSITORY=OFF \
-                -DLLVM_APPEND_VC_REV=OFF \
-                -DLLVM_ENABLE_PROJECTS="clang;lld;clang-tools-extra" \
-                -DLLVM_INCLUDE_BENCHMARKS=OFF \
-                -DLLVM_INCLUDE_EXAMPLES=OFF \
-                -DLLVM_TARGETS_TO_BUILD="AArch64;ARM;BPF;LoongArch;Mips;PowerPC;RISCV;Sparc;WebAssembly;X86" \
-                -DCMAKE_INSTALL_PREFIX="/" \
-                -DCMAKE_BUILD_TYPE=MinSizeRel \
-                -DLLVM_ENABLE_LIBCXX=ON \
-                -DHAVE_CXX_ATOMICS_WITHOUT_LIB=ON \
-                -DHAVE_CXX_ATOMICS64_WITHOUT_LIB=ON \
-                -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON \
-                -DLLVM_BUILD_LLVM_DYLIB=ON \
-                -DLLVM_ENABLE_UNWIND_TABLES=OFF \
-                -DLLVM_LINK_LLVM_DYLIB=ON
-          cmake --build build-clang
-          DESTDIR=`pwd`/llvm-${{ matrix.toolchain_target }} cmake --build build-clang --target install
-          mv llvm-${{ matrix.toolchain_target }}/usr/* llvm-${{ matrix.toolchain_target }}
-          rmdir llvm-${{ matrix.toolchain_target }}/usr
-          find llvm-${{ matrix.toolchain_target }} -type f -exec llvm-strip --strip-all {} \; 2>/dev/null
-          tar cJvf llvm-${{ matrix.toolchain_target }}.tar.xz llvm-${{ matrix.toolchain_target }}
+      - name: Build LLVM
+        if: endsWith(matrix.toolchain_target, '-glibc2.28')
+        run: ./gen-clang.sh ${{ matrix.toolchain_target }}
       - name: Upload LLVM
         if: endsWith(matrix.toolchain_target, '-glibc2.28')
         uses: actions/upload-artifact@v4
