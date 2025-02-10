@@ -3,6 +3,7 @@ set -euo pipefail
 
 TOOLCHAIN=$1
 echo "Toolchain: $TOOLCHAIN"
+echo "LLVM src dir:  $LLVM_SRC_DIR"
 
 curl https://www.zlib.net/zlib-1.3.1.tar.xz | tar xJ
 cmake -B build-zlib \
@@ -16,7 +17,7 @@ cmake --build build-zlib
 cmake --install build-zlib
 
 cmake -B build-clang \
-      -S ../llvm-project/llvm \
+      -S $LLVM_SRC_DIR/llvm \
       -G Ninja \
       --toolchain=`pwd`/$TOOLCHAIN/toolchain.cmake \
       -DCMAKE_BUILD_TYPE=MinSizeRel \

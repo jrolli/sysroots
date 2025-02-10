@@ -21,6 +21,13 @@ make mrproper
 make ARCH=$LINUX_ARCH INSTALL_HDR_PATH=$SYSROOT_PATH headers_install
 popd
 
+CFLAGS="--target=$TARGET -fpic"
+
+if [[ " arm i386 mips mipsel " =~  ".*\ $CMAKE_ARCH\ .*" ]]
+then
+      CFLAGS="$CFLAGS -msoft-float"
+fi
+
 mkdir -p build-musl
 pushd build-musl
 
@@ -29,7 +36,7 @@ AR=llvm-ar \
 RANLIB=llvm-ranlib \
 NM=llvm-nm \
 LDFLAGS=-fuse-ld=lld \
-CFLAGS=--target=$TARGET \
+CFLAGS="$CFLAGS" \
 $MUSL_SRC_DIR/configure --prefix=/ --target=$TARGET --disable-shared
 
 make -j
