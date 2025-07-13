@@ -11,7 +11,7 @@ export OBJDUMP=llvm-objdump
 export AR=llvm-ar
 export RANLIB=llvm-ranlib
 export STRIP=llvm-strip
-export CFLAGS="--target=$TARGET --sysroot=$SYSROOT -ffile-prefix-map=$HOME=./ -D_POSIX_C_SOURCE=200809l"
+export CFLAGS="--target=$TARGET --sysroot=$SYSROOT -ffile-prefix-map=`pwd`=. -D_POSIX_C_SOURCE=200809l -isystem `$CC -print-resource-dir`/include -ffile-prefix-map=`$CC -print-resource-dir`= "
 export CXXFLAGS="$CFLAGS -stdlib=libc++"
 export PKG_CONFIG_PATH=$SYSROOT/lib/pkgconfig
 export LDFLAGS="-fuse-ld=lld --rtlib=compiler-rt -resource-dir=$SYSROOT --unwindlib=libunwind -stdlib=libc++ -lc++abi"
