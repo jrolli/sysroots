@@ -163,6 +163,7 @@ then
     done
 else
     x86_64-linux-glibc2.28
+    aarch64-linux-glibc2.28
     x86_64-linux-glibc2.17
     i686-linux-glibc2.17
     aarch64-linux-glibc2.17

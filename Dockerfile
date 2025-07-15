@@ -12,5 +12,7 @@ RUN mkdir /toolchain && \
     cd /toolchain && \
     find /sources -name '*.tar.xz' -exec tar xf {} \;
 
-ENV PATH=/toolchain/llvm-x86_64-linux-glibc2.28/bin:$PATH
+RUN ln -sfv /toolchain/llvm-`uname -m`-linux-glibc2.28 /toolchain/llvm-native
+
+ENV PATH=/toolchain/llvm-native/bin:$PATH
 ENV TOOLCHAIN_DIR=/toolchain
