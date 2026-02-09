@@ -5,7 +5,7 @@ on:
    tags: 'v*'
 jobs:
   generate-sysroots:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-25.04
     strategy:
       matrix:
         toolchain_target:
