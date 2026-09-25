@@ -20,9 +20,7 @@ Example usage:
 
 tar xf aarch64-linux-musl.tar.xz
 
-cmake -B build \
-      -S path/to/your/project \
-      --toolchain=aarch64-linux-musl/toolchain.cmake
+cmake -Bbuild -Spath/to/your/project --toolchain=aarch64-linux-musl
 cmake --build build
 ```
 
