@@ -5,14 +5,15 @@ TOOLCHAIN=$1
 echo "Toolchain: $TOOLCHAIN"
 echo "LLVM src dir:  $LLVM_SRC_DIR"
 
-curl https://www.zlib.net/zlib-1.3.1.tar.xz | tar xJ
+curl https://www.zlib.net/zlib-1.3.2.tar.xz | tar xJ
 cmake -B build-zlib \
-      -S zlib-1.3.1 \
+      -S zlib-1.3.2 \
       -G Ninja \
       --toolchain=`pwd`/$TOOLCHAIN/toolchain.cmake \
       -DBUILD_SHARED_LIBS=OFF \
       -DCMAKE_BUILD_TYPE=MinSizeRel \
-      -DCMAKE_INSTALL_PREFIX=`pwd`/zlib-install
+      -DCMAKE_INSTALL_PREFIX=`pwd`/zlib-install \
+      -DZLIB_BUILD_TESTING=OFF
 cmake --build build-zlib
 cmake --install build-zlib
 
