@@ -1,6 +1,6 @@
-LABEL org.opencontainers.image.description "Pre-bundled syroots and toolchain"
+FROM debian:13-slim
 
-FROM debian:12-slim
+LABEL org.opencontainers.image.description "Pre-bundled syroots and toolchain"
 
 RUN apt update && \
     apt install -y --no-install-recommends git \

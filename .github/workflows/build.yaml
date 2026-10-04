@@ -44,7 +44,7 @@ jobs:
           git clone --single-branch --branch=llvmorg-23.1.2 --depth=1 https://github.com/llvm/llvm-project  ../llvm-project
       - name: Get compiler
         run: |
-          wget https://github.com/jrolli/sysroots/releases/download/v1.7.2/llvm-x86_64-linux-glibc2.28.tar.xz
+          wget https://github.com/jrolli/sysroots/releases/download/v1.8.0/llvm-x86_64-linux-glibc2.28.tar.xz
           tar xvf llvm-x86_64-linux-glibc2.28.tar.xz
           mv llvm-x86_64-linux-glibc2.28 ../compiler
           rm llvm-x86_64-linux-glibc2.28.tar.xz
