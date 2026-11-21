@@ -1,8 +1,8 @@
 name: Build & Release Sysroots
 on:
- workflow_dispatch:
- push:
-   tags: 'v*'
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
 jobs:
   generate-sysroots:
     runs-on: ubuntu-latest
@@ -32,16 +32,16 @@ jobs:
           ]
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install build tool
         run: |
           sudo apt-get update
           sudo apt-get install python3 python3-pip ninja-build cmake
       - name: Fetch dependencies
         run: |
-          git clone --single-branch --branch=v5.10.271      --depth=1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git ../linux
+          git clone --single-branch --branch=v5.10.274      --depth=1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git ../linux
           git clone --single-branch --branch=v1.2.6         --depth=1 https://git.musl-libc.org/git/musl    ../musl
-          git clone --single-branch --branch=llvmorg-23.1.2 --depth=1 https://github.com/llvm/llvm-project  ../llvm-project
+          git clone --single-branch --branch=llvmorg-23.1.6 --depth=1 https://github.com/llvm/llvm-project  ../llvm-project
       - name: Get compiler
         run: |
           wget https://github.com/jrolli/sysroots/releases/download/v1.8.0/llvm-x86_64-linux-glibc2.28.tar.xz
@@ -52,7 +52,7 @@ jobs:
       - name: Build
         run: ./generate.sh ${{ matrix.toolchain_target }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.toolchain_target }}.tar.xz
           path: ${{ matrix.toolchain_target }}.tar.xz
@@ -67,7 +67,7 @@ jobs:
         run: LLVM_SRC_DIR=../llvm-project ./gen-clang.sh ${{ matrix.toolchain_target }}
       - name: Upload LLVM
         if: endsWith(matrix.toolchain_target, '-glibc2.28')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: llvm-${{ matrix.toolchain_target }}.tar.xz
           path: llvm-${{ matrix.toolchain_target }}.tar.xz
@@ -82,28 +82,28 @@ jobs:
       packages: write
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Gather artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
           pattern: "*.tar.xz"
           merge-multiple: true
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
-          body: "LLVM + Clang v23.1.2\nLinux kernel v5.10.271\nmusl v1.2.6"
+          body: "LLVM + Clang v23.1.6\nLinux kernel v5.10.274\nmusl v1.2.6"
           files: artifacts/*.tar.xz
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Build and push container
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: artifacts
           file: ./Dockerfile
